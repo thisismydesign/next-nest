@@ -45,7 +45,7 @@
     "google-auth-library": "^8.7.0",
     "graphql": "^16.7.1",
     "nestjs-console": "^8.0.0",
-    "next": "^13.1.0",
+    "next": "^14.0.2",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
