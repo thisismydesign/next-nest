@@ -11,8 +11,6 @@
 
 [Use this template](https://github.com/thisismydesign/next-nest/generate)
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
 Featured in:
 - [Geek Culture: NestJS + React (Next.js) in One MVC Repo for Rapid Prototyping](https://medium.com/geekculture/nestjs-react-next-js-in-one-mvc-repo-for-rapid-prototyping-faed42a194ca)
 - [Geek Culture: Automagically Typed GraphQL Queries and Results With Apollo](https://medium.com/geekculture/automagically-typed-graphql-queries-and-results-with-apollo-3731bad989aa)
@@ -31,7 +29,6 @@ It has
 - CI via GitHub Actions
 - Running tasks (e.g. DB seeding) via [nestjs-console](https://github.com/Pop-Code/nestjs-console)
 - Unit and integration testing via Jest
-- Heroku deployment setup
 - Google Analytics 4
 
 ## Usage
