@@ -37,11 +37,5 @@ pnpm graphql:types                             # after resolver changes, once te
 
 ## Rules
 
-- MUST NOT read `.env`; document new vars in `.env.example` and `.env.test`.
-- Development and tests MUST use the local DB; tests drop and sync the `test` DB.
-- MUST NOT deploy without instruction.
-- Schema changes MUST be new migration files, generated against the built entities.
-- GraphQL changes MUST regenerate `src/client/lib/zeus`.
-- Relative server imports MUST end in `.js`; entity relations MUST be typed `Relation<>`; types in decorated signatures MUST be `import type`.
 - Code MUST explain itself; comments SHOULD NOT be needed. Comments and docs MAY record a reason the code cannot show and MUST NOT explain how it works.
 - All prose — comments, docs, messages — MUST stay terse; prescriptions use RFC 2119.
