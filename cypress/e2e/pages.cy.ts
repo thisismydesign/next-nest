@@ -14,6 +14,15 @@ describe('pages', () => {
     cy.request('/api').its('body.hello').should('eq', 'from NestJS');
   });
 
+  it('passes GET /graphql on to GraphQL', () => {
+    cy.request({
+      url: '/graphql?query={things{name}}',
+      headers: { 'apollo-require-preflight': 'true' },
+    })
+      .its('body.data.things')
+      .should('have.length.greaterThan', 0);
+  });
+
   it('rejects private pages without a session', () => {
     cy.request({ url: '/profile', failOnStatusCode: false })
       .its('status')
