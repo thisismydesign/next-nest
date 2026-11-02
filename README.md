@@ -1,5 +1,4 @@
 # next-nest
-[![CI](https://github.com/thisismydesign/next-nest/actions/workflows/ci.yml/badge.svg)](https://github.com/thisismydesign/next-nest/actions/workflows/ci.yml)
 
 Next.js + NestJS monolith: one server serves the REST and GraphQL API and the pages.
 
