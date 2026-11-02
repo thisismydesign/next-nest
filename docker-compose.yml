@@ -4,7 +4,7 @@ services:
       context: .
     image: ${NESTJS_STARTER_IMAGE:-nestjs-starter:local}
     entrypoint: scripts/web-docker-entrypoint.sh
-    command: yarn start:dev
+    command: pnpm start:dev
     environment:
       DATABASE_URL: postgres://postgres:@db:5432
     ports:

@@ -24,14 +24,14 @@ scripts/                 Docker entrypoints
 ## Commands
 
 ```bash
-mise install && cp .env.example .env && yarn install
+mise install && cp .env.example .env && pnpm install
 docker compose up -d db                        # Postgres on localhost:5433, with a `test` DB
-yarn typeorm migration:run && yarn console seed
-yarn start:dev                                 # http://localhost:3000
-yarn lint && yarn test && yarn test:request && yarn build
+pnpm typeorm migration:run && pnpm console seed
+pnpm start:dev                                 # http://localhost:3000
+pnpm lint && pnpm test && pnpm test:request && pnpm build
 docker run --rm -v "$PWD:/e2e" -w /e2e --network=host --entrypoint=cypress cypress/included:12.2.0 run  # browser specs against the running app
-yarn typeorm migration:generate src/server/migration/<Name>
-yarn client:generate:schema                    # after resolver changes, once the app has rewritten src/schema.gql
+pnpm typeorm migration:generate src/server/migration/<Name>
+pnpm client:generate:schema                    # after resolver changes, once the app has rewritten src/schema.gql
 ```
 
 ## Rules

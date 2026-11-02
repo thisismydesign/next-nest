@@ -35,25 +35,25 @@ It has
 
 ### Dev
 
-Tools come from [mise](https://mise.jdx.dev/) (`mise.toml`); the DB runs in Docker.
+Tools come from [mise](https://mise.jdx.dev/) (`.tool-versions`); the DB runs in Docker.
 
 ```sh
 mise install
 cp .env.example .env
-yarn install
+pnpm install
 docker compose up -d db
-yarn typeorm migration:run && yarn console seed
-yarn start:dev
+pnpm typeorm migration:run && pnpm console seed
+pnpm start:dev
 ```
 
 ### Checks
 
 ```sh
-yarn lint
-yarn test
-yarn test:request
-yarn build
-yarn cy run   # against a running app; without a local browser setup, use the Docker image:
+pnpm lint
+pnpm test
+pnpm test:request
+pnpm build
+pnpm cy run   # against a running app; without a local browser setup, use the Docker image:
 docker run --rm -v "$PWD:/e2e" -w /e2e --network=host --entrypoint=cypress cypress/included:12.2.0 run
 ```
 
@@ -62,7 +62,7 @@ docker run --rm -v "$PWD:/e2e" -w /e2e --network=host --entrypoint=cypress cypre
 ```sh
 cp .env.example .env
 docker compose up
-docker compose exec web yarn test
+docker compose exec web pnpm test
 ```
 
 ## Functionality

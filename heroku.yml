@@ -4,6 +4,6 @@ build:
 release:
   image: web
   command:
-    - yarn typeorm migration:run && yarn console seed
+    - pnpm typeorm migration:run && pnpm console seed
 run:
-  web: yarn start:prod
+  web: pnpm start:prod

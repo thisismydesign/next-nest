@@ -2,12 +2,12 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN corepack enable && pnpm install --frozen-lockfile
 
 COPY . /app
 COPY .env.example /app/.env
 
-RUN yarn build
+RUN pnpm build
 
-CMD ["yarn", "start:prod"]
+CMD ["pnpm", "start:prod"]

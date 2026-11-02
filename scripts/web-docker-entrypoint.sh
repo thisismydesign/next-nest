@@ -8,12 +8,12 @@ wait_for()
   echo "$2:$3 available"
 }
 
-yarn install
+pnpm install
 
 wait_for 10 db 5432
 
-yarn typeorm migration:run
+pnpm typeorm migration:run
 
-yarn console seed
+pnpm console seed
 
 exec "$@"
