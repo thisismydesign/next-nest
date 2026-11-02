@@ -7,7 +7,7 @@ import { ViewService } from './view.service.js';
 export class ViewController {
   constructor(private viewService: ViewService) {}
 
-  @Get(['_next/*splat', '__nextjs*splat', 'home'])
+  @Get(['_next/*splat', '__nextjs*splat', 'home', 'things'])
   page(@Req() req: Request, @Res() res: Response) {
     return this.viewService.handler(req, res);
   }

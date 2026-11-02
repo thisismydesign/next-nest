@@ -5,7 +5,13 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['node_modules', 'dist', '**/.next', 'src/client/next-env.d.ts'],
+    ignores: [
+      'node_modules',
+      'dist',
+      '**/.next',
+      'src/client/next-env.d.ts',
+      'src/client/lib/zeus',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
