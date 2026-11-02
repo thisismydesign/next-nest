@@ -18,9 +18,9 @@
     "graphql:types": "zeus _ _ src/schema.gql src/client/lib",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p src/client && tsc --noEmit -p cypress",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p src/client",
     "test": "vitest run",
-    "e2e": "cypress run"
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@apollo/server": "^5.5.1",
@@ -59,6 +59,7 @@
     "@nestjs/schematics": "^12.0.12",
     "@nestjs/testing": "^12.3.2",
     "@next/eslint-plugin-next": "^16.4.3",
+    "@playwright/test": "^1.64.1",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/node": "^24.10.0",
@@ -68,7 +69,6 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/supertest": "^7.2.1",
-    "cypress": "^16.2.1",
     "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.7",

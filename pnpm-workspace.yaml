@@ -1,5 +1,4 @@
 allowBuilds:
-  cypress: true
   "@apollo/protobufjs": false
   "@parcel/watcher": false
 

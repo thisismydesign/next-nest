@@ -28,7 +28,7 @@ It has
 - CI via GitHub Actions
 - Running tasks (e.g. DB seeding) via [nest-commander](https://nest-commander.jaymcdoniel.dev/)
 - Background jobs on Postgres via [pg-boss](https://github.com/timgit/pg-boss), no Redis needed
-- Unit and integration testing via Vitest, browser testing via Cypress
+- Unit and integration testing via Vitest, browser testing via Playwright
 - Google Analytics 4
 
 ## Dev
@@ -51,8 +51,7 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
-pnpm e2e # against a running app
-docker run --rm -v "$PWD:/e2e" -w /e2e --network=host --entrypoint=cypress cypress/included:16.2.1 run # without a local browser
+pnpm e2e # in Google Chrome; starts the production build, or reuses a running app
 ```
 
 ## Deploy

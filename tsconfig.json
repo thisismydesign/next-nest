@@ -14,5 +14,5 @@
     "strictPropertyInitialization": false,
     "types": ["node"]
   },
-  "include": ["src/server", "test", "vitest.config.ts"]
+  "include": ["src/server", "test", "e2e", "vitest.config.ts", "playwright.config.ts"]
 }

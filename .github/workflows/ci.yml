@@ -12,8 +12,6 @@ jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      CYPRESS_INSTALL_BINARY: 0
     steps:
       - uses: actions/checkout@v7
       - uses: jdx/mise-action@v5
@@ -24,8 +22,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      CYPRESS_INSTALL_BINARY: 0
     services:
       db: &db
         image: postgres:17-alpine
@@ -57,17 +53,12 @@ jobs:
       - run: pnpm typeorm migration:run && pnpm cli seed
       - name: Migrations match the entities
         run: pnpm typeorm migration:generate --check src/server/migration/Drift
-      - uses: cypress-io/github-action@v7
-        with:
-          install: false
-          start: pnpm start:prod
-          wait-on: http://localhost:3000
-          wait-on-timeout: 120
+      - run: pnpm e2e
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: cypress-artifacts
-          path: cypress/screenshots
+          name: e2e-traces
+          path: test-results/
 
   docker-image:
     runs-on: ubuntu-latest

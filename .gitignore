@@ -2,8 +2,8 @@ node_modules
 dist
 .next
 coverage
-cypress/screenshots
-cypress/videos
+test-results
+playwright-report
 *.tsbuildinfo
 .env
 CLAUDE.local.md

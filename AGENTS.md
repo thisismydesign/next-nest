@@ -18,7 +18,7 @@ src/server/migration/    TypeORM migrations; src/server/data-source.ts is the CL
 src/client/              Next.js pages router; lib/zeus is generated from src/schema.gql
 src/schema.gql           GraphQL schema, written by Nest on app start
 test/                    request specs, factories, test app and database helpers
-cypress/                 browser specs
+e2e/                     Playwright browser specs, in the installed Google Chrome
 ```
 
 ## Commands
@@ -30,8 +30,7 @@ pnpm build                                     # migrations and commands run fro
 pnpm typeorm migration:run && pnpm cli seed
 pnpm start:dev                                 # http://localhost:3000
 pnpm lint && pnpm typecheck && pnpm test
-pnpm e2e                                       # browser specs against the running app
-docker run --rm -v "$PWD:/e2e" -w /e2e --network=host --entrypoint=cypress cypress/included:16.2.1 run  # same, without a local browser
+pnpm e2e                                       # starts the production build, or reuses a running app
 pnpm typeorm migration:generate src/server/migration/<Name>
 pnpm graphql:types                             # after resolver changes, once tests or the app rewrote src/schema.gql
 ```
