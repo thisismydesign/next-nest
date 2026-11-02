@@ -1,22 +1,20 @@
 describe('pages', () => {
-  it('serves the Nest root', () => {
+  it('serves the landing page', () => {
     cy.visit('/');
-    cy.contains('Hello from NestJS');
-  });
-
-  it('serves the Next page', () => {
-    cy.visit('/home');
-    cy.contains('Hello from NextJS');
+    cy.contains('h1', 'next-nest');
+    cy.contains('a', '/graphql');
   });
 
   it('lists the seeded things from GraphQL', () => {
     cy.visit('/things');
     cy.contains('this is a thing you can order');
   });
-});
 
-describe('private pages', () => {
-  it('reject visitors without a session', () => {
+  it('serves REST', () => {
+    cy.request('/api').its('body.hello').should('eq', 'from NestJS');
+  });
+
+  it('rejects private pages without a session', () => {
     cy.request({ url: '/profile', failOnStatusCode: false })
       .its('status')
       .should('eq', 401);

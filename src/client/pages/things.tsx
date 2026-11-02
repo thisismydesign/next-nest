@@ -1,5 +1,6 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
+import { Layout } from '../components/layout';
 import { graphql } from '../lib/graphql';
 
 export const getServerSideProps = (async ({ req }) => {
@@ -12,14 +13,13 @@ export const getServerSideProps = (async ({ req }) => {
 const Things = ({
   things,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => (
-  <div>
-    <h1>Things</h1>
+  <Layout title="Things">
     <ul>
       {things.map((thing) => (
         <li key={thing.id}>{thing.name}</li>
       ))}
     </ul>
-  </div>
+  </Layout>
 );
 
 export default Things;

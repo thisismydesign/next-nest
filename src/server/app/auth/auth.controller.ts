@@ -23,6 +23,12 @@ export class AuthController {
   @UseGuards(AuthGuard('cognito'))
   cognito() {}
 
+  @Get('logout')
+  logout(@Res() res: Response) {
+    this.session.end(res);
+    res.redirect('/');
+  }
+
   @Get('cognito/redirect')
   @UseGuards(AuthGuard('cognito'))
   cognitoRedirect(@Req() req: Request, @Res() res: Response) {

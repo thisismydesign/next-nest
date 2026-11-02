@@ -15,13 +15,13 @@ describe('REST', () => {
   afterAll(() => app.close());
 
   it('rejects /private without a session', () =>
-    request(app.getHttpServer()).get('/private').expect(401));
+    request(app.getHttpServer()).get('/api/private').expect(401));
 
   it('returns the session user on /private', async () => {
     const user = { id: 1, username: 'someone' };
 
     const res = await request(app.getHttpServer())
-      .get('/private')
+      .get('/api/private')
       .set('Cookie', sessionCookie(app, user))
       .expect(200);
 

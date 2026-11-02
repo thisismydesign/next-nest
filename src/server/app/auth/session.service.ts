@@ -23,4 +23,8 @@ export class SessionService {
       secure: this.config.get('NODE_ENV') === 'production',
     });
   }
+
+  end(res: Response) {
+    res.clearCookie(SESSION_COOKIE);
+  }
 }

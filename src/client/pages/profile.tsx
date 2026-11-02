@@ -1,6 +1,8 @@
 import type { Request } from 'express';
 import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
+import { Layout } from '../components/layout';
+
 export const getServerSideProps = (async ({ req }) => ({
   props: { user: (req as Request).user! },
 })) satisfies GetServerSideProps;
@@ -8,10 +10,9 @@ export const getServerSideProps = (async ({ req }) => ({
 const Profile = ({
   user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => (
-  <div>
-    <h1>Profile</h1>
+  <Layout title="Profile">
     <p>Signed in as {user.username}</p>
-  </div>
+  </Layout>
 );
 
 export default Profile;
