@@ -4,14 +4,14 @@ import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { Layout } from '../components/layout';
 
 export const getServerSideProps = (async ({ req }) => ({
-  props: { user: (req as Request).user! },
+  props: { username: (req as Request).user!.username },
 })) satisfies GetServerSideProps;
 
 const Profile = ({
-  user,
+  username,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => (
   <Layout title="Profile">
-    <p>Signed in as {user.username}</p>
+    <p>Signed in as {username}</p>
   </Layout>
 );
 

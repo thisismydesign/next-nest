@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request, Response } from 'express';
 
@@ -8,30 +8,25 @@ import { SessionService } from './session.service.js';
 export class AuthController {
   constructor(private session: SessionService) {}
 
-  @Get('google')
+  @Get(['google', 'google/redirect'])
   @UseGuards(AuthGuard('google'))
-  google() {}
-
-  @Get('google/redirect')
-  @UseGuards(AuthGuard('google'))
-  googleRedirect(@Req() req: Request, @Res() res: Response) {
-    this.session.start(res, req.user!);
-    res.redirect('/profile');
+  google(@Req() req: Request, @Res() res: Response) {
+    this.signIn(req, res);
   }
 
-  @Get('cognito')
+  @Get(['cognito', 'cognito/redirect'])
   @UseGuards(AuthGuard('cognito'))
-  cognito() {}
+  cognito(@Req() req: Request, @Res() res: Response) {
+    this.signIn(req, res);
+  }
 
-  @Get('logout')
+  @Post('logout')
   logout(@Res() res: Response) {
     this.session.end(res);
-    res.redirect('/');
+    res.redirect(303, '/');
   }
 
-  @Get('cognito/redirect')
-  @UseGuards(AuthGuard('cognito'))
-  cognitoRedirect(@Req() req: Request, @Res() res: Response) {
+  private signIn(req: Request, res: Response) {
     this.session.start(res, req.user!);
     res.redirect('/profile');
   }

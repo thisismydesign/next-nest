@@ -1,4 +1,4 @@
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { testDatabase } from '../../../test/database.js';
@@ -7,15 +7,13 @@ import { ThingsService } from '../app/things/things.service.js';
 import { SeedCommand, seedThings } from './seed.command.js';
 
 describe('SeedCommand', () => {
-  let module: Awaited<ReturnType<typeof build>>;
-  const build = () =>
-    Test.createTestingModule({
+  let module: TestingModule;
+
+  beforeEach(async () => {
+    module = await Test.createTestingModule({
       imports: [testDatabase, ThingsModule],
       providers: [SeedCommand],
     }).compile();
-
-  beforeEach(async () => {
-    module = await build();
   });
 
   afterEach(() => module.close());

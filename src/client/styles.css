@@ -41,3 +41,7 @@ form {
   gap: 0.5rem;
   margin-top: 1rem;
 }
+
+nav form {
+  margin: 0 0 0 auto;
+}

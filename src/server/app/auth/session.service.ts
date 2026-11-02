@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import type { Response } from 'express';
 
-import { SESSION_COOKIE, SessionUser } from './session.js';
+import { cookieOptions, SESSION_COOKIE, SessionUser } from './session.js';
 
 @Injectable()
 export class SessionService {
@@ -13,18 +13,14 @@ export class SessionService {
   ) {}
 
   token(user: SessionUser) {
-    return this.jwt.sign({ sub: user.id, username: user.username });
+    return this.jwt.sign({ sub: user.id });
   }
 
   start(res: Response, user: SessionUser) {
-    res.cookie(SESSION_COOKIE, this.token(user), {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: this.config.get('NODE_ENV') === 'production',
-    });
+    res.cookie(SESSION_COOKIE, this.token(user), cookieOptions(this.config));
   }
 
   end(res: Response) {
-    res.clearCookie(SESSION_COOKIE);
+    res.clearCookie(SESSION_COOKIE, cookieOptions(this.config));
   }
 }

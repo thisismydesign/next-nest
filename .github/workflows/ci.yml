@@ -2,33 +2,32 @@ name: CI
 
 on:
   push:
+    branches: [master]
   pull_request:
-    types: [opened, reopened]
+
+permissions:
+  contents: read
 
 jobs:
-  lint:
+  check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      CYPRESS_INSTALL_BINARY: 0
     steps:
       - uses: actions/checkout@v7
       - uses: jdx/mise-action@v5
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
-
-  typecheck:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v7
-      - uses: jdx/mise-action@v5
-      - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
 
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      CYPRESS_INSTALL_BINARY: 0
     services:
-      db:
+      db: &db
         image: postgres:17-alpine
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
@@ -39,23 +38,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: jdx/mise-action@v5
-      - run: cp .env.example .env
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
 
-  # Production build, then browser specs against it.
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     services:
-      db:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_HOST_AUTH_METHOD: trust
-          POSTGRES_DB: test
-        ports:
-          - 5433:5432
-        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+      db: *db
     steps:
       - uses: actions/checkout@v7
       - uses: jdx/mise-action@v5

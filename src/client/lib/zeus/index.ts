@@ -1100,7 +1100,6 @@ createOrder?: [{	alias: string | Variable<any, string>,	thingName: string | Vari
 	["Query"]: AliasType<{
 	orders?:ValueTypes["Order"],
 	things?:ValueTypes["Thing"],
-	users?:ValueTypes["User"],
 	whoAmI?:ValueTypes["User"],
 		__typename?: boolean | `@${string}`,
 	['...on Query']?: Omit<ValueTypes["Query"], "...on Query">
@@ -1146,7 +1145,6 @@ createOrder?: [{	alias: string,	thingName: string},ResolverInputTypes["Order"]],
 	["Query"]: AliasType<{
 	orders?:ResolverInputTypes["Order"],
 	things?:ResolverInputTypes["Thing"],
-	users?:ResolverInputTypes["User"],
 	whoAmI?:ResolverInputTypes["User"],
 		__typename?: boolean | `@${string}`
 }>;
@@ -1192,7 +1190,6 @@ export type ModelTypes = {
 	["Query"]: {
 		orders: Array<ModelTypes["Order"]>,
 	things: Array<ModelTypes["Thing"]>,
-	users: Array<ModelTypes["User"]>,
 	whoAmI: ModelTypes["User"]
 };
 	["Thing"]: {
@@ -1242,7 +1239,6 @@ export type GraphQLTypes = {
 	__typename: "Query",
 	orders: Array<GraphQLTypes["Order"]>,
 	things: Array<GraphQLTypes["Thing"]>,
-	users: Array<GraphQLTypes["User"]>,
 	whoAmI: GraphQLTypes["User"],
 	['...on Query']: Omit<GraphQLTypes["Query"], "...on Query">
 };

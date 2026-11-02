@@ -43,10 +43,10 @@ docker run --rm -v "$PWD:/e2e" -w /e2e --network=host --entrypoint=cypress cypre
 
 ## Deploy
 
-`Dockerfile` builds a production image. Run migrations and the seed on release:
+`Dockerfile` builds a production image. Run migrations and the seed on release, inside the image:
 
 ```sh
-pnpm typeorm migration:run && pnpm cli seed
+node node_modules/typeorm/cli.js -d dist/data-source.js migration:run && node dist/cli seed
 ```
 
 The app reads its configuration from the environment; see `.env.example`.

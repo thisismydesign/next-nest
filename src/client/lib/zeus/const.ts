@@ -26,7 +26,6 @@ export const ReturnTypes: Record<string,any> = {
 	Query:{
 		orders:"Order",
 		things:"Thing",
-		users:"User",
 		whoAmI:"User"
 	},
 	Thing:{

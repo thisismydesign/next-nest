@@ -29,7 +29,8 @@ pnpm build                                     # migrations and commands run fro
 pnpm typeorm migration:run && pnpm cli seed
 pnpm start:dev                                 # http://localhost:3000
 pnpm lint && pnpm typecheck && pnpm test
-docker run --rm -v "$PWD:/e2e" -w /e2e --network=host --entrypoint=cypress cypress/included:16.2.1 run  # browser specs against the running app
+pnpm e2e                                       # browser specs against the running app
+docker run --rm -v "$PWD:/e2e" -w /e2e --network=host --entrypoint=cypress cypress/included:16.2.1 run  # same, without a local browser
 pnpm typeorm migration:generate src/server/migration/<Name>
 pnpm graphql:types                             # after resolver changes, once tests or the app rewrote src/schema.gql
 ```

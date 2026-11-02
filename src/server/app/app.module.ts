@@ -1,9 +1,10 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { configSchema } from '../config.js';
 import { AppController } from './app.controller.js';
 import { AuthModule } from './auth/auth.module.js';
 import { OrdersModule } from './orders/orders.module.js';
@@ -12,10 +13,15 @@ import { UsersModule } from './users/users.module.js';
 
 @Module({
   imports: [
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: 'src/schema.gql',
-      sortSchema: true,
+      useFactory: (config: ConfigService) => ({
+        autoSchemaFile:
+          config.get('NODE_ENV') === 'production' ? true : 'src/schema.gql',
+        sortSchema: true,
+      }),
+      inject: [ConfigService],
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (config: ConfigService) => ({

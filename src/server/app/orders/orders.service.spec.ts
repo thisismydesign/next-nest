@@ -7,7 +7,6 @@ import {
   usersFactory,
 } from '../../../../test/factories.js';
 import { testDatabase } from '../../../../test/database.js';
-import { ThingsModule } from '../things/things.module.js';
 import { ThingsService } from '../things/things.service.js';
 import { UsersModule } from '../users/users.module.js';
 import { UsersService } from '../users/users.service.js';
@@ -22,7 +21,7 @@ describe('OrdersService', () => {
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      imports: [testDatabase, OrdersModule, UsersModule, ThingsModule],
+      imports: [testDatabase, OrdersModule, UsersModule],
     }).compile();
     orders = module.get(OrdersService);
     users = module.get(UsersService);

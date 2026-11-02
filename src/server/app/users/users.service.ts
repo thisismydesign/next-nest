@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Provider, User } from './user.entity.js';
 
@@ -19,11 +19,15 @@ export class UsersService {
     return this.users.save(user);
   }
 
-  findOne(options: FindOneOptions<User>) {
-    return this.users.findOne(options);
+  findOne(id: number) {
+    return this.users.findOneBy({ id });
   }
 
-  findAll(options: FindManyOptions<User> = {}) {
-    return this.users.find(options);
+  async findOrCreate(user: CreateUser) {
+    const { provider, providerId } = user;
+    return (
+      (await this.users.findOneBy({ provider, providerId })) ??
+      this.create(user)
+    );
   }
 }

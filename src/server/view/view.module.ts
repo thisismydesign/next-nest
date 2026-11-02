@@ -4,7 +4,6 @@ import { ViewController } from './view.controller.js';
 import { ViewService } from './view.service.js';
 
 @Module({
-  imports: [],
   providers: [ViewService],
   controllers: [ViewController],
 })

@@ -6,7 +6,6 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   {
     ignores: [
-      'node_modules',
       'dist',
       '**/.next',
       'src/client/next-env.d.ts',
@@ -32,7 +31,7 @@ export default tseslint.config(
       ],
       '@typescript-eslint/no-unused-vars': [
         'error',
-        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+        { argsIgnorePattern: '^_' },
       ],
     },
   },

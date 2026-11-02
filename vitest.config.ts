@@ -1,6 +1,9 @@
+import { readFileSync } from 'node:fs';
+import { parseEnv } from 'node:util';
 import { defineConfig } from 'vitest/config';
 
-process.loadEnvFile('.env.test');
+// Tests drop the schema, so .env.test wins over a DATABASE_URL already exported in the shell.
+Object.assign(process.env, parseEnv(readFileSync('.env.test', 'utf8')));
 
 export default defineConfig({
   test: {

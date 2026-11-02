@@ -22,7 +22,9 @@ export const Layout = ({
           {label}
         </Link>
       ))}
-      <a href="/auth/logout">Sign out</a>
+      <form method="post" action="/auth/logout">
+        <button>Sign out</button>
+      </form>
     </nav>
     <main>
       <h1>{title}</h1>

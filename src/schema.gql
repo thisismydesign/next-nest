@@ -23,7 +23,6 @@ type Order {
 type Query {
   orders: [Order!]!
   things: [Thing!]!
-  users: [User!]!
   whoAmI: User!
 }
 

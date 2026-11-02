@@ -1,11 +1,12 @@
 FROM node:24-alpine AS build
 WORKDIR /app
 RUN corepack enable
+ENV CYPRESS_INSTALL_BINARY=0
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 ARG NEXT_PUBLIC_GA_MEASUREMENT_ID
-RUN pnpm build && pnpm prune --prod
+RUN pnpm build && pnpm prune --prod && rm -rf src/client/.next/cache
 
 FROM node:24-alpine
 WORKDIR /app

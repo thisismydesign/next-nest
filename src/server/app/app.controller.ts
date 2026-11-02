@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
 import { CurrentUser, JwtAuthGuard } from './auth/jwt-auth.guard.js';
-import type { SessionUser } from './auth/session.js';
+import type { User } from './users/user.entity.js';
 
 @Controller('api')
 export class AppController {
@@ -12,7 +12,7 @@ export class AppController {
 
   @Get('private')
   @UseGuards(JwtAuthGuard)
-  whoAmI(@CurrentUser() user: SessionUser) {
+  whoAmI(@CurrentUser() user: User) {
     return user;
   }
 }

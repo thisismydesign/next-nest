@@ -2,7 +2,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { entities } from '../src/server/data-source.js';
 
-// Every test module starts from an empty schema.
 export const testDatabase = TypeOrmModule.forRoot({
   type: 'postgres',
   url: process.env.DATABASE_URL,

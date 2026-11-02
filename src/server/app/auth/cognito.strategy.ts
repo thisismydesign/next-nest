@@ -1,12 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-oauth2';
 
-import { Provider } from '../users/user.entity.js';
 import { UsersService } from '../users/users.service.js';
+import { oauthState } from './oauth-state.js';
 
-type UserInfo = { username: string; name?: string; email: string };
+type UserInfo = {
+  sub: string;
+  username: string;
+  name?: string;
+  email?: string;
+};
 
 @Injectable()
 export class CognitoStrategy extends PassportStrategy(Strategy, 'cognito') {
@@ -25,6 +30,8 @@ export class CognitoStrategy extends PassportStrategy(Strategy, 'cognito') {
       clientID: config.getOrThrow<string>('OAUTH_COGNITO_ID'),
       clientSecret: config.getOrThrow<string>('OAUTH_COGNITO_SECRET'),
       callbackURL: config.getOrThrow<string>('OAUTH_COGNITO_REDIRECT_URL'),
+      store: oauthState(config),
+      pkce: true,
     });
     this.oauth2Url = oauth2Url;
   }
@@ -34,16 +41,15 @@ export class CognitoStrategy extends PassportStrategy(Strategy, 'cognito') {
     const response = await fetch(`${this.oauth2Url}/userInfo`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
+    if (!response.ok) throw new UnauthorizedException();
     const info = (await response.json()) as UserInfo;
 
-    // Federated identities are named "<provider>_<id>"; native ones have a bare id.
-    const [provider, providerId] = info.username.includes('_')
-      ? (info.username.split('_') as [Provider, string])
-      : ['cognito' as const, info.username];
-    const where = { provider, providerId };
-    return (
-      (await this.users.findOne({ where })) ??
-      this.users.create({ ...where, name: info.name, username: info.email })
-    );
+    // Usernames can be chosen at sign-up; only `sub` identifies a Cognito user.
+    return this.users.findOrCreate({
+      provider: 'cognito',
+      providerId: info.sub,
+      name: info.name,
+      username: info.email ?? info.username,
+    });
   }
 }
