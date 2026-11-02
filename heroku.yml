@@ -1,9 +1,0 @@
-build:
-  docker:
-    web: Dockerfile.prod
-release:
-  image: web
-  command:
-    - pnpm typeorm migration:run && pnpm console seed
-run:
-  web: pnpm start:prod
