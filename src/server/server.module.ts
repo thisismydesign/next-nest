@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
-import { AppModule } from 'src/server/app/app.module';
-import { ViewModule } from 'src/server/view/view.module';
+import { AppModule } from './app/app.module';
+import { ViewModule } from './view/view.module';
 
 @Module({
-  imports: [AppModule, ViewModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), AppModule, ViewModule],
 })
 export class ServerModule {}

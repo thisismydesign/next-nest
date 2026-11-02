@@ -1,19 +1,21 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": true,
+    "moduleResolution": "bundler",
+    "target": "es2023",
+    "lib": ["es2023"],
+    "rootDir": "src/server",
+    "outDir": "dist",
+    "declaration": false,
     "removeComments": true,
+    "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2017",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "types": ["node"]
   },
-  "ts-node": {
-    "files": true
-  },
-  "include": ["src/server", "test", "ormconfig.ts", "jest.config.ts"],
+  "include": ["src/server"]
 }

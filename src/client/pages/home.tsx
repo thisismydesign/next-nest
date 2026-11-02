@@ -1,23 +1,12 @@
-import React from 'react';
 import { NextPage } from 'next';
 
-const Home: NextPage<{ message: string; query: string }> = (props) => {
-  const { message, query } = props;
+const Home: NextPage<{ query: string }> = ({ query }) => (
+  <div>
+    <h1>Hello from NextJS!</h1>
+    <p>Query: {query}</p>
+  </div>
+);
 
-  return (
-    <div>
-      <h1>Hello from NextJS! - Home</h1>
-      {message}
-      {query}
-    </div>
-  );
-};
-
-Home.getInitialProps = ({ query }) => {
-  return {
-    message: 'some initial props including query params',
-    query: JSON.stringify(query),
-  };
-};
+Home.getInitialProps = ({ query }) => ({ query: JSON.stringify(query) });
 
 export default Home;
