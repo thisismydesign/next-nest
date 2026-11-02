@@ -9,3 +9,11 @@ describe('pages', () => {
     cy.contains('Hello from NextJS');
   });
 });
+
+describe('private pages', () => {
+  it('reject visitors without a session', () => {
+    cy.request({ url: '/profile', failOnStatusCode: false })
+      .its('status')
+      .should('eq', 401);
+  });
+});

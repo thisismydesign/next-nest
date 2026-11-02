@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 
 import { Thing } from '../things/thing.entity.js';
 import { User } from '../users/user.entity.js';
@@ -24,11 +25,11 @@ export class Order {
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.orders, { nullable: false })
-  user: User;
+  user: Relation<User>;
 
   @Field(() => Thing)
   @ManyToOne(() => Thing, (thing) => thing.orders, { nullable: false })
-  thing: Thing;
+  thing: Relation<Thing>;
 
   @Field()
   @CreateDateColumn()

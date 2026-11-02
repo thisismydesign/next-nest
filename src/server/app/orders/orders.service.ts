@@ -6,7 +6,11 @@ import { Thing } from '../things/thing.entity.js';
 import { User } from '../users/user.entity.js';
 import { Order } from './order.entity.js';
 
-export type CreateOrder = { alias: string; user: User; thing: Thing };
+export type CreateOrder = {
+  alias: string;
+  user: Pick<User, 'id'>;
+  thing: Pick<Thing, 'id'>;
+};
 
 const relations = { user: true, thing: true };
 

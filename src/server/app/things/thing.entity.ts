@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 
 import { Order } from '../orders/order.entity.js';
 
@@ -22,7 +23,7 @@ export class Thing {
   name: string;
 
   @OneToMany(() => Order, (order) => order.thing)
-  orders?: Order[];
+  orders?: Relation<Order[]>;
 
   @Field()
   @CreateDateColumn()

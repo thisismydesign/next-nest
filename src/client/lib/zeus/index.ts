@@ -1082,9 +1082,26 @@ type ZEUS_UNIONS = never
 export type ValueTypes = {
     /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
 ["DateTime"]:unknown;
+	["Mutation"]: AliasType<{
+createOrder?: [{	alias: string | Variable<any, string>,	thingName: string | Variable<any, string>},ValueTypes["Order"]],
+		__typename?: boolean | `@${string}`,
+	['...on Mutation']?: Omit<ValueTypes["Mutation"], "...on Mutation">
+}>;
+	["Order"]: AliasType<{
+	alias?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	thing?:ValueTypes["Thing"],
+	updated_at?:boolean | `@${string}`,
+	user?:ValueTypes["User"],
+		__typename?: boolean | `@${string}`,
+	['...on Order']?: Omit<ValueTypes["Order"], "...on Order">
+}>;
 	["Query"]: AliasType<{
+	orders?:ValueTypes["Order"],
 	things?:ValueTypes["Thing"],
 	users?:ValueTypes["User"],
+	whoAmI?:ValueTypes["User"],
 		__typename?: boolean | `@${string}`,
 	['...on Query']?: Omit<ValueTypes["Query"], "...on Query">
 }>;
@@ -1113,9 +1130,24 @@ export type ValueTypes = {
 export type ResolverInputTypes = {
     /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
 ["DateTime"]:unknown;
+	["Mutation"]: AliasType<{
+createOrder?: [{	alias: string,	thingName: string},ResolverInputTypes["Order"]],
+		__typename?: boolean | `@${string}`
+}>;
+	["Order"]: AliasType<{
+	alias?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	thing?:ResolverInputTypes["Thing"],
+	updated_at?:boolean | `@${string}`,
+	user?:ResolverInputTypes["User"],
+		__typename?: boolean | `@${string}`
+}>;
 	["Query"]: AliasType<{
+	orders?:ResolverInputTypes["Order"],
 	things?:ResolverInputTypes["Thing"],
 	users?:ResolverInputTypes["User"],
+	whoAmI?:ResolverInputTypes["User"],
 		__typename?: boolean | `@${string}`
 }>;
 	["Thing"]: AliasType<{
@@ -1137,6 +1169,7 @@ export type ResolverInputTypes = {
 }>;
 	["schema"]: AliasType<{
 	query?:ResolverInputTypes["Query"],
+	mutation?:ResolverInputTypes["Mutation"],
 		__typename?: boolean | `@${string}`
 }>;
 	["ID"]:unknown
@@ -1145,9 +1178,22 @@ export type ResolverInputTypes = {
 export type ModelTypes = {
     /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
 ["DateTime"]:any;
+	["Mutation"]: {
+		createOrder: ModelTypes["Order"]
+};
+	["Order"]: {
+		alias: string,
+	created_at: ModelTypes["DateTime"],
+	id: number,
+	thing: ModelTypes["Thing"],
+	updated_at: ModelTypes["DateTime"],
+	user: ModelTypes["User"]
+};
 	["Query"]: {
-		things: Array<ModelTypes["Thing"]>,
-	users: Array<ModelTypes["User"]>
+		orders: Array<ModelTypes["Order"]>,
+	things: Array<ModelTypes["Thing"]>,
+	users: Array<ModelTypes["User"]>,
+	whoAmI: ModelTypes["User"]
 };
 	["Thing"]: {
 		created_at: ModelTypes["DateTime"],
@@ -1165,7 +1211,8 @@ export type ModelTypes = {
 	username: string
 };
 	["schema"]: {
-	query?: ModelTypes["Query"] | undefined | null
+	query?: ModelTypes["Query"] | undefined | null,
+	mutation?: ModelTypes["Mutation"] | undefined | null
 };
 	["ID"]:any
     }
@@ -1176,10 +1223,27 @@ export type GraphQLTypes = {
 	// ------------------------------------------------------;
 	/** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
 ["DateTime"]: "scalar" & { name: "DateTime" };
+	["Mutation"]: {
+	__typename: "Mutation",
+	createOrder: GraphQLTypes["Order"],
+	['...on Mutation']: Omit<GraphQLTypes["Mutation"], "...on Mutation">
+};
+	["Order"]: {
+	__typename: "Order",
+	alias: string,
+	created_at: GraphQLTypes["DateTime"],
+	id: number,
+	thing: GraphQLTypes["Thing"],
+	updated_at: GraphQLTypes["DateTime"],
+	user: GraphQLTypes["User"],
+	['...on Order']: Omit<GraphQLTypes["Order"], "...on Order">
+};
 	["Query"]: {
 	__typename: "Query",
+	orders: Array<GraphQLTypes["Order"]>,
 	things: Array<GraphQLTypes["Thing"]>,
 	users: Array<GraphQLTypes["User"]>,
+	whoAmI: GraphQLTypes["User"],
 	['...on Query']: Omit<GraphQLTypes["Query"], "...on Query">
 };
 	["Thing"]: {

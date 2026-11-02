@@ -7,9 +7,24 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Mutation {
+  createOrder(alias: String!, thingName: String!): Order!
+}
+
+type Order {
+  alias: String!
+  created_at: DateTime!
+  id: Int!
+  thing: Thing!
+  updated_at: DateTime!
+  user: User!
+}
+
 type Query {
+  orders: [Order!]!
   things: [Thing!]!
   users: [User!]!
+  whoAmI: User!
 }
 
 type Thing {
