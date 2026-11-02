@@ -31,6 +31,10 @@ export class Order {
   @ManyToOne(() => Thing, (thing) => thing.orders, { nullable: false })
   thing: Relation<Thing>;
 
+  @Field({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
+  confirmedAt?: Date;
+
   @Field()
   @CreateDateColumn()
   created_at: Date;

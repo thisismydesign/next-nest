@@ -7,7 +7,7 @@ const sections: [string, [string, string][]][] = [
       ['/things', 'Rendered on the server from a typed GraphQL query.'],
       [
         '/orders',
-        'Your orders, with a form that calls a mutation. Needs a session.',
+        'Your orders, with a form that calls a mutation; a background job confirms each order. Needs a session.',
       ],
       ['/profile', 'The session user. Needs a session.'],
     ],

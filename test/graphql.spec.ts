@@ -1,6 +1,14 @@
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 import { DataSource } from 'typeorm';
 
 import { OrdersService } from '../src/server/app/orders/orders.service.js';
@@ -53,6 +61,29 @@ describe('GraphQL', () => {
       expect(res.body.data.orders).toEqual([
         { id: order.id, alias: order.alias, thing: { name: thing.name } },
       ]);
+    });
+
+    it('confirms a new order in the background', async () => {
+      const user = await app.get(UsersService).create(usersFactory.build());
+      const thing = await app.get(ThingsService).create(thingsFactory.build());
+      const cookie = sessionCookie(app, user);
+
+      await query(
+        `mutation { createOrder(thingName: "${thing.name}", alias: "gift") { id } }`,
+      )
+        .set('Cookie', cookie)
+        .expect(200);
+
+      await vi.waitFor(
+        async () => {
+          const res = await query('{ orders { confirmedAt } }').set(
+            'Cookie',
+            cookie,
+          );
+          expect(res.body.data.orders[0].confirmedAt).toBeTruthy();
+        },
+        { timeout: 10_000, interval: 250 },
+      );
     });
   });
 });

@@ -5,6 +5,7 @@ import { CurrentUser, JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import type { SessionUser } from '../auth/session.js';
 import { ThingsService } from '../things/things.service.js';
 import { Order } from './order.entity.js';
+import { OrdersJobs } from './orders.jobs.js';
 import { OrdersService } from './orders.service.js';
 
 @Resolver(() => Order)
@@ -13,6 +14,7 @@ export class OrdersResolver {
   constructor(
     private service: OrdersService,
     private things: ThingsService,
+    private jobs: OrdersJobs,
   ) {}
 
   @Query(() => [Order])
@@ -28,6 +30,8 @@ export class OrdersResolver {
   ) {
     const thing = await this.things.findOne({ where: { name: thingName } });
     if (!thing) throw new NotFoundException(`No thing named ${thingName}`);
-    return this.service.findOrCreate({ alias, user, thing });
+    const order = await this.service.findOrCreate({ alias, user, thing });
+    await this.jobs.confirmLater(order.id);
+    return order;
   }
 }
