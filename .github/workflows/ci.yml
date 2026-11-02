@@ -40,6 +40,8 @@ jobs:
       - uses: jdx/mise-action@v5
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
+      - name: GraphQL client is up to date
+        run: pnpm graphql:types && git diff --exit-code src/schema.gql src/client/lib/zeus
 
   e2e:
     runs-on: ubuntu-latest
@@ -53,6 +55,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm typeorm migration:run && pnpm cli seed
+      - name: Migrations match the entities
+        run: pnpm typeorm migration:generate --check src/server/migration/Drift
       - uses: cypress-io/github-action@v7
         with:
           install: false
