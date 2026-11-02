@@ -35,16 +35,34 @@ It has
 
 ### Dev
 
+Tools come from [mise](https://mise.jdx.dev/) (`mise.toml`); the DB runs in Docker.
+
+```sh
+mise install
+cp .env.example .env
+yarn install
+docker compose up -d db
+yarn typeorm migration:run && yarn console seed
+yarn start:dev
+```
+
+### Checks
+
+```sh
+yarn lint
+yarn test
+yarn test:request
+yarn build
+yarn cy run   # against a running app; without a local browser setup, use the Docker image:
+docker run --rm -v "$PWD:/e2e" -w /e2e --network=host --entrypoint=cypress cypress/included:12.2.0 run
+```
+
+### Everything in Docker
+
 ```sh
 cp .env.example .env
-
 docker compose up
-
-docker compose exec web yarn lint
 docker compose exec web yarn test
-docker compose exec web yarn test:request
-docker compose exec web yarn build
-docker run -it -v $PWD:/e2e -w /e2e --network="host" --entrypoint=cypress cypress/included:12.2.0 run
 ```
 
 ## Functionality
