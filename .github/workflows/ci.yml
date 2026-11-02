@@ -15,18 +15,18 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
 
+  typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    services:
-      db:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_HOST_AUTH_METHOD: trust
-          POSTGRES_DB: test
-        ports:
-          - 5433:5432
-        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v7
       - uses: jdx/mise-action@v5
@@ -34,44 +34,15 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
 
-  test-request:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    services:
-      db:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_HOST_AUTH_METHOD: trust
-          POSTGRES_DB: test
-        ports:
-          - 5433:5432
-        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
-    steps:
-      - uses: actions/checkout@v7
-      - uses: jdx/mise-action@v5
-      - run: cp .env.example .env
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test:request
-
-  # Production build, migrations and seed against a fresh DB, then browser specs.
+  # Production build, then browser specs against it.
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    services:
-      db:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_HOST_AUTH_METHOD: trust
-          POSTGRES_DB: test
-        ports:
-          - 5433:5432
-        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v7
       - uses: jdx/mise-action@v5
       - run: cp .env.example .env
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typeorm migration:run && pnpm console seed
       - run: pnpm build
       - uses: cypress-io/github-action@v7
         with:
@@ -83,9 +54,7 @@ jobs:
         if: failure()
         with:
           name: cypress-artifacts
-          path: |
-            cypress/videos
-            cypress/screenshots
+          path: cypress/screenshots
 
   docker-image:
     runs-on: ubuntu-latest

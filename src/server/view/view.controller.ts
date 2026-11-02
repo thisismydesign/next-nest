@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 
-import { ViewService } from './view.service';
+import { ViewService } from './view.service.js';
 
 @Controller()
 export class ViewController {

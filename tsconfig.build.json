@@ -1,4 +1,8 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src/server"
+  },
+  "include": ["src/server"],
   "exclude": ["**/*.spec.ts"]
 }

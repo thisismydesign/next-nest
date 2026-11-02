@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Next.js + NestJS MVC monolith",
   "license": "MIT",
+  "type": "module",
   "engines": {
     "node": ">=24"
   },
@@ -11,7 +12,12 @@
   "scripts": {
     "build": "nest build && next build src/client",
     "start:dev": "nest start --watch --preserveWatchOutput",
-    "start:prod": "NODE_ENV=production node dist/main"
+    "start:prod": "NODE_ENV=production node dist/main",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p src/client && tsc --noEmit -p cypress",
+    "test": "vitest run",
+    "e2e": "cypress run"
   },
   "dependencies": {
     "@nestjs/common": "^12.3.2",
@@ -25,12 +31,23 @@
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@nestjs/cli": "^12.0.11",
     "@nestjs/schematics": "^12.0.12",
+    "@nestjs/testing": "^12.3.2",
+    "@next/eslint-plugin-next": "^16.4.3",
     "@types/express": "^5.0.6",
     "@types/node": "^24.10.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "typescript": "~6.0.2"
+    "cypress": "^16.2.1",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.7",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.72.1",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
   }
 }

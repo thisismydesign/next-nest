@@ -1,21 +1,24 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "bundler",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "resolvePackageJsonExports": true,
+    "isolatedModules": true,
     "target": "es2023",
     "lib": ["es2023"],
-    "rootDir": "src/server",
     "outDir": "dist",
+    "rootDir": ".",
     "declaration": false,
     "removeComments": true,
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "strict": true,
     "strictPropertyInitialization": false,
     "types": ["node"]
   },
-  "include": ["src/server"]
+  "include": ["src/server", "test", "vitest.config.ts"]
 }

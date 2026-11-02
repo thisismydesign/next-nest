@@ -1,7 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Request, Response } from 'express';
-import next from 'next';
+import type { Request, Response } from 'express';
+import * as nextModule from 'next';
+
+// Node maps `default` of an __esModule CommonJS package to module.exports.default; TypeScript still types it as module.exports.
+const next = nextModule.default as unknown as typeof nextModule.default.default;
 
 @Injectable()
 export class ViewService implements OnModuleInit {
