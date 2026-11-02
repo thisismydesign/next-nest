@@ -6,6 +6,7 @@ export const configSchema = z
       .enum(['development', 'test', 'production'])
       .default('development'),
     PORT: z.coerce.number().default(3000),
+    HOST: z.string().optional(),
     DATABASE_URL: z.url(),
     JWT_SECRET: z.string().min(1),
     JWT_EXPIRES_IN: z

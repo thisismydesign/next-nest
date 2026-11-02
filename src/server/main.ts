@@ -9,4 +9,5 @@ const app = await NestFactory.create(ServerModule);
 // Next.js and the analytics snippet rely on inline scripts; a content security policy needs nonces first.
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cookieParser());
-await app.listen(app.get(ConfigService).getOrThrow<number>('PORT'));
+const config = app.get(ConfigService);
+await app.listen(config.getOrThrow<number>('PORT'), config.get('HOST'));
