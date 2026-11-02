@@ -8,6 +8,11 @@ describe('pages', () => {
     cy.visit('/home');
     cy.contains('Hello from NextJS');
   });
+
+  it('lists the seeded things from GraphQL', () => {
+    cy.visit('/things');
+    cy.contains('this is a thing you can order');
+  });
 });
 
 describe('private pages', () => {

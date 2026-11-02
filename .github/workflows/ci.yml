@@ -62,7 +62,7 @@ jobs:
       - run: cp .env.example .env
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm typeorm migration:run
+      - run: pnpm typeorm migration:run && pnpm cli seed
       - uses: cypress-io/github-action@v7
         with:
           install: false
