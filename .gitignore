@@ -6,3 +6,4 @@ cypress/screenshots
 cypress/videos
 *.tsbuildinfo
 .env
+claude.local.md
