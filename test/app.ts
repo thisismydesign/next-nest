@@ -5,12 +5,17 @@ import { Test } from '@nestjs/testing';
 import { DataSource } from 'typeorm';
 
 import { AppModule } from '../src/server/app/app.module.js';
+import { configSchema } from '../src/server/config.js';
 
 // The API as in production, on an emptied test database.
 export const createApp = async (): Promise<INestApplication> => {
   const module = await Test.createTestingModule({
     imports: [
-      ConfigModule.forRoot({ isGlobal: true, ignoreEnvFile: true }),
+      ConfigModule.forRoot({
+        isGlobal: true,
+        ignoreEnvFile: true,
+        validationSchema: configSchema,
+      }),
       AppModule,
     ],
   }).compile();

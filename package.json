@@ -36,6 +36,7 @@
     "@nestjs/typeorm": "^12.0.2",
     "cookie-parser": "^1.4.7",
     "graphql": "^16.14.2",
+    "helmet": "^8.3.0",
     "nest-commander": "^3.21.0",
     "next": "^16.4.3",
     "passport": "^0.7.0",
@@ -47,7 +48,8 @@
     "react-dom": "^19.3.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "typeorm": "^1.1.2"
+    "typeorm": "^1.1.2",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
