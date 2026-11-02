@@ -1,32 +1,59 @@
-import React, { useEffect } from 'react';
-import { NextPage } from 'next';
-import { Request } from 'express';
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { useRouter } from 'next/router';
+import type { FormEvent } from 'react';
 
-import { typedQuery } from '../app/apollo-client';
+import { Layout } from '../components/layout';
+import { graphql } from '../lib/graphql';
+import { Chain } from '../lib/zeus';
 
-export async function getServerSideProps({ req }) {
-  const { data } = await typedQuery(
-    { orders: { alias: true, thing: { name: true } } },
-    req,
-  );
+export const getServerSideProps = (async ({ req }) => {
+  const { orders, things } = await graphql(req)('query')({
+    orders: { id: true, alias: true, thing: { name: true } },
+    things: { name: true },
+  });
+  return { props: { orders, things } };
+}) satisfies GetServerSideProps;
 
-  return {
-    props: { user: (req as Request).user, orders: data.orders },
+const Orders = ({
+  orders,
+  things,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const router = useRouter();
+
+  const order = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    await Chain('/graphql')('mutation')({
+      createOrder: [
+        {
+          alias: String(form.get('alias')),
+          thingName: String(form.get('thing')),
+        },
+        { id: true },
+      ],
+    });
+    router.replace(router.asPath);
   };
-}
-
-type Props = ExtractPromiseType<ReturnType<typeof getServerSideProps>>;
-
-const Orders: NextPage<Props['props']> = (props) => {
-  useEffect(() => {
-    window.gtag('event', 'ordersOpened');
-  }, []);
 
   return (
-    <div>
-      <h1>Orders overview</h1>
-      {JSON.stringify(props)}
-    </div>
+    <Layout title="Orders">
+      <ul>
+        {orders.map((o) => (
+          <li key={o.id}>
+            {o.alias}: {o.thing.name}
+          </li>
+        ))}
+      </ul>
+      <form onSubmit={order}>
+        <input name="alias" placeholder="alias" required />
+        <select name="thing">
+          {things.map((thing) => (
+            <option key={thing.name}>{thing.name}</option>
+          ))}
+        </select>
+        <button>Order</button>
+      </form>
+    </Layout>
   );
 };
 

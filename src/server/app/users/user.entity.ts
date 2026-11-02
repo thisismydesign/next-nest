@@ -1,49 +1,49 @@
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { ObjectType, Field } from '@nestjs/graphql';
-import { Provider } from 'src/server/common/types/user';
-import { Order } from '../orders/order.entity';
+import type { Relation } from 'typeorm';
+
+import { Order } from '../orders/order.entity.js';
+
+export type Provider = 'google' | 'cognito';
 
 @ObjectType()
 @Entity()
 export class User {
-  @Field()
+  @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field()
-  @Column({ nullable: false })
+  @Field(() => String)
+  @Column({ type: 'varchar' })
   provider: Provider;
 
   @Field()
-  @Column({ nullable: false })
+  @Column()
   providerId: string;
 
   @Field()
-  @Column({ nullable: false })
+  @Column()
   username: string;
 
-  @Field()
-  @Column({ nullable: false })
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   name?: string;
 
-  @Field((_type) => [Order], { nullable: 'items' })
-  @OneToMany((_type) => Order, (order) => order.user)
-  orders?: Order[];
+  @OneToMany(() => Order, (order) => order.user)
+  orders?: Relation<Order[]>;
 
   @Field()
-  @Column()
   @CreateDateColumn()
   created_at: Date;
 
   @Field()
-  @Column()
   @UpdateDateColumn()
   updated_at: Date;
 }

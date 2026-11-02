@@ -1,23 +1,14 @@
-import { Resolver, Query } from '@nestjs/graphql';
-import { Inject, UseGuards } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { FindManyOptions } from 'typeorm';
-import { User } from './user.entity';
-import { GqlAuthGuard } from '../auth/graphql/gql-auth.guard';
-import { CurrentUser } from '../auth/graphql/gql-auth.decorator';
+import { UseGuards } from '@nestjs/common';
+import { Query, Resolver } from '@nestjs/graphql';
 
-@Resolver((_of) => User)
+import { CurrentUser, JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { User } from './user.entity.js';
+
+@Resolver(() => User)
 export class UsersResolver {
-  constructor(@Inject(UsersService) private usersService: UsersService) {}
-
-  @Query((_returns) => [User])
-  async users(params: FindManyOptions<User> = {}): Promise<User[]> {
-    return this.usersService.findAll(params);
-  }
-
-  @Query((_returns) => User)
-  @UseGuards(GqlAuthGuard)
+  @Query(() => User)
+  @UseGuards(JwtAuthGuard)
   whoAmI(@CurrentUser() user: User) {
-    return this.usersService.findOne({ where: { id: user.id } });
+    return user;
   }
 }

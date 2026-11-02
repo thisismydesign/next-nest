@@ -1,13 +1,13 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "../node_modules",
-    "types": ["cypress"],
-    "isolatedModules": false
+    "target": "es2023",
+    "lib": ["es2023", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["cypress", "node"]
   },
-  "include": [
-    "**/*.ts",
-    "../cypress.config.ts",
-    "../cypress.docker.config.ts"
-  ]
+  "include": ["**/*.ts", "../cypress.config.ts"]
 }

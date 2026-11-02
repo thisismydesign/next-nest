@@ -1,51 +1,33 @@
-import { Inject, UseGuards } from '@nestjs/common';
-import {
-  Args,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { NotFoundException, UseGuards } from '@nestjs/common';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
-import { CurrentUser } from '../auth/graphql/gql-auth.decorator';
-import { GqlAuthGuard } from '../auth/graphql/gql-auth.guard';
-import { ThingsService } from '../things/things.service';
-import { User } from '../users/user.entity';
-import { Order } from './order.entity';
-import { OrdersService } from './orders.service';
+import { CurrentUser, JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import type { SessionUser } from '../auth/session.js';
+import { ThingsService } from '../things/things.service.js';
+import { Order } from './order.entity.js';
+import { OrdersService } from './orders.service.js';
 
-@Resolver((_of) => Order)
+@Resolver(() => Order)
+@UseGuards(JwtAuthGuard)
 export class OrdersResolver {
   constructor(
-    @Inject(OrdersService) private ordersService: OrdersService,
-    @Inject(ThingsService) private thingsService: ThingsService,
+    private service: OrdersService,
+    private things: ThingsService,
   ) {}
 
-  @Query((_returns) => [Order])
-  @UseGuards(GqlAuthGuard)
-  orders(@CurrentUser() user: User) {
-    return this.ordersService.findAll({ where: { user: { id: user.id } } });
+  @Query(() => [Order])
+  orders(@CurrentUser() user: SessionUser) {
+    return this.service.findAll({ where: { user: { id: user.id } } });
   }
 
-  @ResolveField()
-  thing(@Parent() order: Order) {
-    return this.thingsService.findOne({
-      where: { id: order.thing.id },
-    });
-  }
-
-  @Mutation((_returns) => Order)
-  @UseGuards(GqlAuthGuard)
-  createOrder(
-    @CurrentUser() user: User,
-    @Args({ name: 'thingName', type: () => String }) thingName: string,
-    @Args({ name: 'alias', type: () => String }) alias: string,
+  @Mutation(() => Order)
+  async createOrder(
+    @CurrentUser() user: SessionUser,
+    @Args('thingName') thingName: string,
+    @Args('alias') alias: string,
   ) {
-    return this.ordersService.createFromThingDetails({
-      alias: alias,
-      user: user,
-      thingName: thingName,
-    });
+    const thing = await this.things.findOne({ where: { name: thingName } });
+    if (!thing) throw new NotFoundException(`No thing named ${thingName}`);
+    return this.service.findOrCreate({ alias, user, thing });
   }
 }

@@ -1,23 +1,8 @@
-version: '3'
-
 services:
-  web:
-    build:
-      context: .
-    image: ${NESTJS_STARTER_IMAGE:-nestjs-starter:local}
-    entrypoint: scripts/web-docker-entrypoint.sh
-    command: yarn start:dev
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    volumes:
-      - ${DUMMY_MOUNT:-.:/app}
-
   db:
-    image: postgres:13.4-alpine
+    image: postgres:17-alpine
     environment:
-      # Login without password
-      POSTGRES_HOST_AUTH_METHOD: "trust"
-      # Auto-create test DB
+      POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_DB: test
+    ports:
+      - "127.0.0.1:${DB_PORT:-5433}:5432"

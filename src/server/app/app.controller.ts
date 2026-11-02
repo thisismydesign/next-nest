@@ -1,20 +1,18 @@
-import { Controller, Request, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 
-import { AppService } from './app.service';
-import { JwtAuthGuard } from './auth/jwt/jwt-auth.guard';
+import { CurrentUser, JwtAuthGuard } from './auth/jwt-auth.guard.js';
+import type { User } from './users/user.entity.js';
 
-@Controller()
+@Controller('api')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get('/')
-  getHello(): string {
-    return this.appService.getHello();
+  @Get()
+  hello() {
+    return { hello: 'from NestJS', at: new Date().toISOString() };
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('private')
-  getPrivate(@Request() req) {
-    return req.user;
+  @UseGuards(JwtAuthGuard)
+  whoAmI(@CurrentUser() user: User) {
+    return user;
   }
 }

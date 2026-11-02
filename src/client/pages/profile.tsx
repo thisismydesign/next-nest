@@ -1,19 +1,18 @@
-import React from 'react';
-import { NextPage } from 'next';
-import { Request } from 'express';
+import type { Request } from 'express';
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
-export async function getServerSideProps({ req }) {
-  return {
-    props: { user: (req as Request).user },
-  };
-}
+import { Layout } from '../components/layout';
 
-type Props = ExtractPromiseType<ReturnType<typeof getServerSideProps>>;
+export const getServerSideProps = (async ({ req }) => ({
+  props: { username: (req as Request).user!.username },
+})) satisfies GetServerSideProps;
 
-const Profile: NextPage<Props['props']> = (props) => {
-  const { user } = props;
-
-  return <h1>Profile {JSON.stringify(user)}</h1>;
-};
+const Profile = ({
+  username,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => (
+  <Layout title="Profile">
+    <p>Signed in as {username}</p>
+  </Layout>
+);
 
 export default Profile;

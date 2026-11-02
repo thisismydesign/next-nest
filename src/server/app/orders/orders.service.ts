@@ -1,64 +1,41 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
-import { ThingsService } from '../things/things.service';
-import {
-  CreateOrderDto,
-  CreateOrderFromThingDetailsDto,
-} from './dto/create-order.dto';
-import { Order } from './order.entity';
+
+import { Thing } from '../things/thing.entity.js';
+import { User } from '../users/user.entity.js';
+import { Order } from './order.entity.js';
+
+export type CreateOrder = {
+  alias: string;
+  user: Pick<User, 'id'>;
+  thing: Pick<Thing, 'id'>;
+};
+
+const relations = { user: true, thing: true };
 
 @Injectable()
 export class OrdersService {
-  constructor(
-    @InjectRepository(Order)
-    private ordersRepository: Repository<Order>,
-    @Inject(ThingsService) private thingsService: ThingsService,
-  ) {}
+  constructor(@InjectRepository(Order) private orders: Repository<Order>) {}
 
-  create(order: CreateOrderDto) {
-    return this.ordersRepository.save(order);
+  create(order: CreateOrder) {
+    return this.orders.save(order);
   }
 
-  findOne(params: FindOneOptions<Order> = {}) {
-    return this.ordersRepository.findOne(
-      Object.assign({ relations: ['user', 'thing'] }, params),
-    );
+  findOne(options: FindOneOptions<Order>) {
+    return this.orders.findOne({ relations, ...options });
   }
 
-  findAll(params: FindManyOptions<Order> = {}) {
-    return this.ordersRepository.find(
-      Object.assign({ relations: ['user', 'thing'] }, params),
-    );
+  findAll(options: FindManyOptions<Order> = {}) {
+    return this.orders.find({ relations, ...options });
   }
 
-  async findOrCreateOne(params: FindOneOptions<Order> = {}) {
-    let order: Order;
-
-    order = await this.findOne(params);
-    if (!order) {
-      const conditions = params.where as CreateOrderDto;
-      order = await this.create({
-        alias: conditions.alias,
-        user: conditions.user,
-        thing: conditions.thing,
-      });
-    }
-
-    return order;
-  }
-
-  async createFromThingDetails(params: CreateOrderFromThingDetailsDto) {
-    const thing = await this.thingsService.findOne({
-      where: { name: params.thingName },
-    });
-
-    return this.findOrCreateOne({
-      where: {
-        user: { id: params.user.id },
-        alias: params.alias,
-        thing: { id: thing.id },
-      },
-    });
+  async findOrCreate(order: CreateOrder) {
+    const where = {
+      alias: order.alias,
+      user: { id: order.user.id },
+      thing: { id: order.thing.id },
+    };
+    return (await this.findOne({ where })) ?? this.create(order);
   }
 }

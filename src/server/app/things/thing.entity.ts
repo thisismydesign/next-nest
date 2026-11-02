@@ -1,36 +1,35 @@
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { ObjectType, Field } from '@nestjs/graphql';
-import { Order } from '../orders/order.entity';
+import type { Relation } from 'typeorm';
+
+import { Order } from '../orders/order.entity.js';
 
 @ObjectType()
 @Entity()
 export class Thing {
-  @Field()
+  @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
 
   @Field()
-  @Column({ nullable: false })
+  @Column()
   name: string;
 
-  @Field((_type) => [Order], { nullable: 'items' })
-  @OneToMany((_type) => Order, (order) => order.thing)
-  orders?: Order[];
+  @OneToMany(() => Order, (order) => order.thing)
+  orders?: Relation<Order[]>;
 
   @Field()
-  @Column()
   @CreateDateColumn()
   created_at: Date;
 
   @Field()
-  @Column()
   @UpdateDateColumn()
   updated_at: Date;
 }

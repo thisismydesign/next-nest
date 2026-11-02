@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Thing } from './thing.entity';
-import { ThingsResolver } from './things.resolver';
-import { ThingsService } from './things.service';
+import { Thing } from './thing.entity.js';
+import { ThingsResolver } from './things.resolver.js';
+import { ThingsService } from './things.service.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Thing])],

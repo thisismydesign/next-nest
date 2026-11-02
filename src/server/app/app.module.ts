@@ -1,48 +1,41 @@
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConsoleModule } from 'nestjs-console';
-import { join } from 'path';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
-import { SeedService } from 'src/server/console/seed.service';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { ThingsModule } from './things/things.module';
-import { OrdersModule } from './orders/orders.module';
+import { configSchema } from '../config.js';
+import { AppController } from './app.controller.js';
+import { AuthModule } from './auth/auth.module.js';
+import { OrdersModule } from './orders/orders.module.js';
+import { ThingsModule } from './things/things.module.js';
+import { UsersModule } from './users/users.module.js';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    ConfigModule.forRoot({ isGlobal: true, validationSchema: configSchema }),
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      playground: { settings: { 'request.credentials': 'include' } },
-    }),
-    TypeOrmModule.forRootAsync({
-      useFactory: async (configService: ConfigService) => ({
-        type: 'postgres',
-        url: configService.get<string>('DATABASE_URL'),
-        autoLoadEntities: true,
-        ssl:
-          configService.get<string>('NODE_ENV') === 'production'
-            ? { rejectUnauthorized: false }
-            : false,
+      useFactory: (config: ConfigService) => ({
+        autoSchemaFile:
+          config.get('NODE_ENV') === 'production' ? true : 'src/schema.gql',
+        sortSchema: true,
       }),
       inject: [ConfigService],
     }),
-    ConsoleModule,
+    TypeOrmModule.forRootAsync({
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        url: config.get<string>('DATABASE_URL'),
+        autoLoadEntities: true,
+      }),
+      inject: [ConfigService],
+    }),
     AuthModule,
     UsersModule,
     ThingsModule,
     OrdersModule,
   ],
-  providers: [SeedService, AppService],
   controllers: [AppController],
 })
 export class AppModule {}

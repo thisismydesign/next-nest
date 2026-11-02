@@ -1,12 +1,13 @@
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
-import { ServerModule } from 'src/server/server.module';
+import { ServerModule } from './server.module.js';
 
-async function bootstrap() {
-  const app = await NestFactory.create(ServerModule);
-  app.use(cookieParser());
-
-  await app.listen(process.env.PORT || 3000);
-}
-bootstrap();
+const app = await NestFactory.create(ServerModule);
+// Next.js and the analytics snippet rely on inline scripts; a content security policy needs nonces first.
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(cookieParser());
+const config = app.get(ConfigService);
+await app.listen(config.getOrThrow<number>('PORT'), config.get('HOST'));

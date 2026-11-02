@@ -1,25 +1,17 @@
-import { Controller, Get, Res, Req, UseGuards } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { JwtAuthGuard } from '../app/auth/jwt/jwt-auth.guard';
+import { Controller, Get, Next, Req, Res, UseGuards } from '@nestjs/common';
+import type { NextFunction, Request, Response } from 'express';
 
-import { ViewService } from './view.service';
+import { GRAPHQL_PATH, PageGuard } from './page.guard.js';
+import { ViewService } from './view.service.js';
 
-@Controller('/')
+@Controller()
 export class ViewController {
   constructor(private viewService: ViewService) {}
 
-  @Get('_next*')
-  public async assets(@Req() req: Request, @Res() res: Response) {
-    await this.viewService.handler(req, res);
-  }
-  @Get('home')
-  public async home(@Req() req: Request, @Res() res: Response) {
-    await this.viewService.handler(req, res);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('/:path((?!graphql$))*')
-  public async authenticatedPage(@Req() req: Request, @Res() res: Response) {
-    await this.viewService.handler(req, res);
+  @Get(['', '*splat'])
+  @UseGuards(PageGuard)
+  page(@Req() req: Request, @Res() res: Response, @Next() next: NextFunction) {
+    if (req.path === GRAPHQL_PATH) return next();
+    return this.viewService.handler(req, res);
   }
 }

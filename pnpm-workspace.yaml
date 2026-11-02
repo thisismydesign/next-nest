@@ -1,0 +1,7 @@
+allowBuilds:
+  cypress: true
+  "@apollo/protobufjs": false
+  "@parcel/watcher": false
+
+overrides:
+  adm-zip: ">=0.6.1"

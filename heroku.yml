@@ -1,9 +1,0 @@
-build:
-  docker:
-    web: Dockerfile.prod
-release:
-  image: web
-  command:
-    - yarn typeorm migration:run && yarn console seed
-run:
-  web: yarn start:prod

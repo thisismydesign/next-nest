@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './user.entity';
+import { Provider, User } from './user.entity.js';
+
+export type CreateUser = {
+  provider: Provider;
+  providerId: string;
+  username: string;
+  name?: string;
+};
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) {}
+  constructor(@InjectRepository(User) private users: Repository<User>) {}
 
-  create(user: CreateUserDto) {
-    return this.usersRepository.save(user);
+  create(user: CreateUser) {
+    return this.users.save(user);
   }
 
-  findOne(params: FindOneOptions<User> = {}) {
-    return this.usersRepository.findOne(params);
+  findOne(id: number) {
+    return this.users.findOneBy({ id });
   }
 
-  findAll(params: FindManyOptions<User> = {}) {
-    return this.usersRepository.find(params);
+  async findOrCreate(user: CreateUser) {
+    const { provider, providerId } = user;
+    return (
+      (await this.users.findOneBy({ provider, providerId })) ??
+      this.create(user)
+    );
   }
 }

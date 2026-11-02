@@ -2,202 +2,80 @@ name: CI
 
 on:
   push:
+    branches: [master]
   pull_request:
-    types: [opened, reopened]
+
+permissions:
+  contents: read
 
 jobs:
-  verify-docker-setup:
+  check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Init
-        run: ./scripts/docker_setup_init.sh
-
-      - name: Pull images
-        run: docker compose pull db
-
-      - name: Docker build
-        run: docker compose build web
-
-      - name: Docker init
-        run: docker compose run --rm web sh -c 'exit 0'
-
-  build-docker-image:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      docker-tag: ${{ steps.meta.outputs.tags }}
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx to be able to use caching
-        uses: docker/setup-buildx-action@v2
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: local/${{ github.repository }}
-
-      - name: Build image
-        uses: docker/build-push-action@v3
-        with:
-          file: Dockerfile.prod
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha
-
-  lint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: [build-docker-image]
     env:
-      NESTJS_STARTER_IMAGE: ${{ needs.build-docker-image.outputs.docker-tag }}
-
+      CYPRESS_INSTALL_BINARY: 0
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Docker Buildx to be able to use caching
-      uses: docker/setup-buildx-action@v2
-
-    - name: Build image
-      uses: docker/build-push-action@v3
-      with:
-        load: true
-        file: Dockerfile.prod
-        tags: ${{ needs.build-docker-image.outputs.docker-tag }}
-        cache-from: type=gha
-        cache-to: type=gha
-
-    - name: Init
-      run: ./scripts/docker_setup_init.sh
-
-    - name: Pull images
-      run: docker compose pull db
-
-    - name: Run lint
-      run: docker compose run web yarn lint
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
 
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [build-docker-image]
     env:
-      NESTJS_STARTER_IMAGE: ${{ needs.build-docker-image.outputs.docker-tag }}
-
+      CYPRESS_INSTALL_BINARY: 0
+    services:
+      db: &db
+        image: postgres:17-alpine
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: test
+        ports:
+          - 5433:5432
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - name: GraphQL client is up to date
+        run: pnpm graphql:types && git diff --exit-code src/schema.gql src/client/lib/zeus
 
-    - name: Set up Docker Buildx to be able to use caching
-      uses: docker/setup-buildx-action@v2
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      db: *db
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+      - run: cp .env.example .env
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm typeorm migration:run && pnpm cli seed
+      - name: Migrations match the entities
+        run: pnpm typeorm migration:generate --check src/server/migration/Drift
+      - uses: cypress-io/github-action@v7
+        with:
+          install: false
+          start: pnpm start:prod
+          wait-on: http://localhost:3000
+          wait-on-timeout: 120
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: cypress-artifacts
+          path: cypress/screenshots
 
-    - name: Build image
-      uses: docker/build-push-action@v3
-      with:
-        load: true
-        file: Dockerfile.prod
-        tags: ${{ needs.build-docker-image.outputs.docker-tag }}
-        cache-from: type=gha
-        cache-to: type=gha
-
-    - name: Init
-      run: ./scripts/docker_setup_init.sh
-
-    - name: Pull images
-      run: docker compose pull db
-
-    - name: Run tests
-      run: docker compose run web yarn test
-
-  test-request:
+  docker-image:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [build-docker-image]
-    env:
-      NESTJS_STARTER_IMAGE: ${{ needs.build-docker-image.outputs.docker-tag }}
-
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Docker Buildx to be able to use caching
-      uses: docker/setup-buildx-action@v2
-
-    - name: Build image
-      uses: docker/build-push-action@v3
-      with:
-        load: true
-        file: Dockerfile.prod
-        tags: ${{ needs.build-docker-image.outputs.docker-tag }}
-        cache-from: type=gha
-        cache-to: type=gha
-
-    - name: Init
-      run: ./scripts/docker_setup_init.sh
-
-    - name: Pull images
-      run: docker compose pull db
-
-    - name: Run request tests
-      run: docker compose run web yarn test:request
-
-  test-e2e:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: [build-docker-image]
-    env:
-      NESTJS_STARTER_IMAGE: ${{ needs.build-docker-image.outputs.docker-tag }}
-      DUMMY_MOUNT: .:/dummy
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Docker Buildx to be able to use caching
-      uses: docker/setup-buildx-action@v2
-
-    - name: Build image
-      uses: docker/build-push-action@v3
-      with:
-        load: true
-        file: Dockerfile.prod
-        tags: ${{ needs.build-docker-image.outputs.docker-tag }}
-        cache-from: type=gha
-        cache-to: type=gha
-
-    - name: Init
-      run: ./scripts/docker_setup_init.sh
-
-    - name: Pull images
-      run: docker compose pull db
-
-    - name: Docker up
-      run: docker compose up --detach
-
-    - name: Cypress run
-      uses: cypress-io/github-action@v4
-      with:
-        wait-on: 'http://localhost:3000'
-        wait-on-timeout: 120
-
-    - name: Save Cypress artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: cypress-artifacts
-        path: |
-          cypress/videos
-          cypress/screenshots
-
-    - name: Docker setup logs
-      if: always()
-      run: docker compose logs --timestamps --tail="all" > docker-logs.txt
-
-    - name: Save log artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: log-artifacts
-        path: docker-logs.txt
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          cache-from: type=gha
+          cache-to: type=gha

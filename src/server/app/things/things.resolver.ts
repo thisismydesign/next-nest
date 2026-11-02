@@ -1,15 +1,14 @@
-import { Resolver, Query } from '@nestjs/graphql';
-import { Inject } from '@nestjs/common';
-import { FindManyOptions } from 'typeorm';
-import { Thing } from './thing.entity';
-import { ThingsService } from './things.service';
+import { Query, Resolver } from '@nestjs/graphql';
 
-@Resolver((_of) => Thing)
+import { Thing } from './thing.entity.js';
+import { ThingsService } from './things.service.js';
+
+@Resolver(() => Thing)
 export class ThingsResolver {
-  constructor(@Inject(ThingsService) private thingsService: ThingsService) {}
+  constructor(private service: ThingsService) {}
 
-  @Query((_returns) => [Thing])
-  async things(params: FindManyOptions<Thing> = {}): Promise<Thing[]> {
-    return this.thingsService.findAll(params);
+  @Query(() => [Thing])
+  things() {
+    return this.service.findAll();
   }
 }

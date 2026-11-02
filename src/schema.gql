@@ -2,46 +2,43 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
-  id: Float!
-  provider: String!
-  providerId: String!
-  username: String!
-  name: String!
-  orders: [Order]!
-  created_at: DateTime!
-  updated_at: DateTime!
-}
-
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
-type Order {
-  id: Float!
-  alias: String!
-  user: User!
-  thing: Thing!
-  created_at: DateTime!
-  updated_at: DateTime!
+type Mutation {
+  createOrder(alias: String!, thingName: String!): Order!
 }
 
-type Thing {
-  id: Float!
-  name: String!
-  orders: [Order]!
+type Order {
+  alias: String!
   created_at: DateTime!
+  id: Int!
+  thing: Thing!
   updated_at: DateTime!
+  user: User!
 }
 
 type Query {
-  users: [User!]!
-  whoAmI: User!
-  things: [Thing!]!
   orders: [Order!]!
+  things: [Thing!]!
+  whoAmI: User!
 }
 
-type Mutation {
-  createOrder(thingName: String!, alias: String!): Order!
+type Thing {
+  created_at: DateTime!
+  id: Int!
+  name: String!
+  updated_at: DateTime!
+}
+
+type User {
+  created_at: DateTime!
+  id: Int!
+  name: String
+  provider: String!
+  providerId: String!
+  updated_at: DateTime!
+  username: String!
 }

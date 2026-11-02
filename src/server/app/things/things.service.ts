@@ -1,26 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository, FindOneOptions } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 
-import { Thing } from './thing.entity';
-import { CreateThingDto } from './dto/create-thing.dto';
+import { Thing } from './thing.entity.js';
+
+export type CreateThing = { name: string };
 
 @Injectable()
 export class ThingsService {
-  constructor(
-    @InjectRepository(Thing)
-    private thingsRepository: Repository<Thing>,
-  ) {}
+  constructor(@InjectRepository(Thing) private things: Repository<Thing>) {}
 
-  create(thing: CreateThingDto) {
-    return this.thingsRepository.save(thing);
+  create(thing: CreateThing) {
+    return this.things.save(thing);
   }
 
-  findOne(params: FindOneOptions<Thing> = {}) {
-    return this.thingsRepository.findOne(params);
+  findOne(options: FindOneOptions<Thing>) {
+    return this.things.findOne(options);
   }
 
-  findAll(params: FindManyOptions<Thing> = {}) {
-    return this.thingsRepository.find(params);
+  findAll() {
+    return this.things.find();
   }
 }
