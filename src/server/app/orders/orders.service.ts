@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, IsNull, Repository } from 'typeorm';
 
 import { Thing } from '../things/thing.entity.js';
 import { User } from '../users/user.entity.js';
@@ -28,6 +28,13 @@ export class OrdersService {
 
   findAll(options: FindManyOptions<Order> = {}) {
     return this.orders.find({ relations, ...options });
+  }
+
+  async confirm(id: number) {
+    await this.orders.update(
+      { id, confirmedAt: IsNull() },
+      { confirmedAt: new Date() },
+    );
   }
 
   async findOrCreate(order: CreateOrder) {

@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
@@ -21,7 +22,12 @@ describe('OrdersService', () => {
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      imports: [testDatabase, OrdersModule, UsersModule],
+      imports: [
+        testDatabase,
+        ConfigModule.forRoot({ isGlobal: true }),
+        OrdersModule,
+        UsersModule,
+      ],
     }).compile();
     orders = module.get(OrdersService);
     users = module.get(UsersService);

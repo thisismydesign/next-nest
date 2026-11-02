@@ -1089,6 +1089,7 @@ createOrder?: [{	alias: string | Variable<any, string>,	thingName: string | Vari
 }>;
 	["Order"]: AliasType<{
 	alias?:boolean | `@${string}`,
+	confirmedAt?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	thing?:ValueTypes["Thing"],
@@ -1135,6 +1136,7 @@ createOrder?: [{	alias: string,	thingName: string},ResolverInputTypes["Order"]],
 }>;
 	["Order"]: AliasType<{
 	alias?:boolean | `@${string}`,
+	confirmedAt?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	thing?:ResolverInputTypes["Thing"],
@@ -1181,6 +1183,7 @@ export type ModelTypes = {
 };
 	["Order"]: {
 		alias: string,
+	confirmedAt?: ModelTypes["DateTime"] | undefined | null,
 	created_at: ModelTypes["DateTime"],
 	id: number,
 	thing: ModelTypes["Thing"],
@@ -1228,6 +1231,7 @@ export type GraphQLTypes = {
 	["Order"]: {
 	__typename: "Order",
 	alias: string,
+	confirmedAt?: GraphQLTypes["DateTime"] | undefined | null,
 	created_at: GraphQLTypes["DateTime"],
 	id: number,
 	thing: GraphQLTypes["Thing"],

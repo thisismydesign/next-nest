@@ -13,6 +13,7 @@ type Mutation {
 
 type Order {
   alias: String!
+  confirmedAt: DateTime
   created_at: DateTime!
   id: Int!
   thing: Thing!

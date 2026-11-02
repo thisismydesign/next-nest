@@ -17,6 +17,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	Order:{
 		alias:"String",
+		confirmedAt:"DateTime",
 		created_at:"DateTime",
 		id:"Int",
 		thing:"Thing",

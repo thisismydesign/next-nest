@@ -8,7 +8,7 @@ import { Chain } from '../lib/zeus';
 
 export const getServerSideProps = (async ({ req }) => {
   const { orders, things } = await graphql(req)('query')({
-    orders: { id: true, alias: true, thing: { name: true } },
+    orders: { id: true, alias: true, confirmedAt: true, thing: { name: true } },
     things: { name: true },
   });
   return { props: { orders, things } };
@@ -40,7 +40,8 @@ const Orders = ({
       <ul>
         {orders.map((o) => (
           <li key={o.id}>
-            {o.alias}: {o.thing.name}
+            {o.alias}: {o.thing.name} ({o.confirmedAt ? 'confirmed' : 'pending'}
+            )
           </li>
         ))}
       </ul>

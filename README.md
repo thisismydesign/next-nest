@@ -27,6 +27,7 @@ It has
 - Typescript, ESLint
 - CI via GitHub Actions
 - Running tasks (e.g. DB seeding) via [nest-commander](https://nest-commander.jaymcdoniel.dev/)
+- Background jobs on Postgres via [pg-boss](https://github.com/timgit/pg-boss), no Redis needed
 - Unit and integration testing via Vitest, browser testing via Cypress
 - Google Analytics 4
 

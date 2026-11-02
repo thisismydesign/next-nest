@@ -12,6 +12,7 @@ Next.js + NestJS monolith template.
 ```
 src/server/main.ts       NestJS entry; ServerModule = AppModule (API) + ViewModule (serves Next.js)
 src/server/app/          REST under /api, GraphQL resolvers, TypeORM entities, auth (JWT cookie, Google, Cognito)
+src/server/app/jobs/     pg-boss background jobs; features register workers, e.g. orders/orders.jobs.ts
 src/server/commands/     nest-commander commands, e.g. seed; src/server/cli.ts runs them
 src/server/migration/    TypeORM migrations; src/server/data-source.ts is the CLI data source
 src/client/              Next.js pages router; lib/zeus is generated from src/schema.gql
